@@ -31,7 +31,7 @@ with app.app_context():
 # Serve frontend
 @app.route("/")
 def index():
-    return render_template("index.html")
+    return render_template("polar/templates/index.html")
 
 @app.route("/customers")
 def customers():
@@ -48,3 +48,4 @@ def add_customer():
     db.session.add(customer)
     db.session.commit()
     return jsonify({"message": "Customer added successfully"})
+
