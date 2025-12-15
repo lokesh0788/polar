@@ -13,13 +13,13 @@ def get_db_connection():
         user=os.getenv("MYSQLUSER"),
         password=os.getenv("MYSQLPASSWORD"),
         database=os.getenv("MYSQLDATABASE"),
-        port=int(os.getenv("MYSQLPORT", 3306))
+        port=int(os.getenv("MYSQLPORT"))
     )
 
 # ---------------- ROUTES ----------------
 @app.route("/")
 def login_page():
-    return render_template("login.html")
+    return render_template("/login.html")
 
 @app.route("/dashboard")
 def dashboard():
@@ -58,3 +58,4 @@ def login():
 # ---------------- MAIN ----------------
 if __name__ == "__main__":
     app.run(debug=flase)
+
