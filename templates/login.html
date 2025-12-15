@@ -350,7 +350,7 @@ function handleLogin(event) {
     loginBtn.disabled = true;
     loginBtn.textContent = "Signing in...";
 
-    fetch("/login", {
+    fetch("/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password })
