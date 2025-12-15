@@ -4,22 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Service Management System</title>
+
+    <!-- Flask static CSS -->
     <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
+
     <!-- Navigation Bar -->
     <nav class="navbar">
         <div class="navbar-container">
             <div class="navbar-brand">
-               ⚙️ Polar Analytical Service Management 
+                ⚙️ Polar Analytical Service Management
             </div>
             <ul class="navbar-menu">
-                <li><a href="dashboard.html" class="active">Dashboard</a></li>
-                <li><a href="customers.html">Customers</a></li>
-                <li><a href="instruments.html">Instruments</a></li>
-                <li><a href="services.html">Services</a></li>
-                <li><a href="export.html">Export Data</a></li>
-                <li id="admin-link" style="display:none;"><a href="admin_users.html">User Management</a></li>
+                <li><a href="/dashboard" class="active">Dashboard</a></li>
+                <li><a href="/customers">Customers</a></li>
+                <li><a href="/instruments">Instruments</a></li>
+                <li><a href="/services">Services</a></li>
+                <li><a href="/export">Export Data</a></li>
+                <li id="admin-link" style="display:none;">
+                    <a href="/admin-users">User Management</a>
+                </li>
             </ul>
             <div class="user-menu" id="user-info"></div>
         </div>
@@ -27,14 +32,15 @@
 
     <!-- Main Container -->
     <div class="container">
+
         <!-- Page Header -->
         <div class="page-header">
             <div>
                 <h1>Dashboard</h1>
                 <p>Welcome to your Service Management System</p>
             </div>
-            <div style="text-align: right;">
-                <p id="current-date" style="margin: 0;"></p>
+            <div style="text-align:right;">
+                <p id="current-date"></p>
             </div>
         </div>
 
@@ -54,21 +60,19 @@
             </div>
             <div class="stat-card danger">
                 <h3>Critical Issues</h3>
-                <div class="number" id="critical-issues">0</div>
+                <div class="number">0</div>
             </div>
         </div>
 
         <!-- Quick Actions -->
         <div class="card">
-            <div class="card-header">
-                <h2>Quick Actions</h2>
-            </div>
+            <div class="card-header"><h2>Quick Actions</h2></div>
             <div class="card-body">
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
-                    <a href="add_customer.html" class="btn btn-primary" style="text-align: center;">➕ Add New Customer</a>
-                    <a href="add_instrument.html" class="btn btn-primary" style="text-align: center;">🔧 Add New Instrument</a>
-                    <a href="add_service.html" class="btn btn-success" style="text-align: center;">✔️ Record Service</a>
-                    <a href="reports.html" class="btn btn-secondary" style="text-align: center;">📊 View Reports</a>
+                <div class="quick-actions">
+                    <a href="/add-customer" class="btn btn-primary">➕ Add Customer</a>
+                    <a href="/add-instrument" class="btn btn-primary">🔧 Add Instrument</a>
+                    <a href="/add-service" class="btn btn-success">✔️ Record Service</a>
+                    <a href="/reports" class="btn btn-secondary">📊 View Reports</a>
                 </div>
             </div>
         </div>
@@ -77,12 +81,12 @@
         <div class="card">
             <div class="card-header"><h2>Recent Customers</h2></div>
             <div class="card-body">
-                <table class="table" id="recent-customers-table">
+                <table class="table">
                     <thead>
                         <tr>
-                            <th>Customer ID</th>
-                            <th>Customer Name</th>
-                            <th>Contact Person</th>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Contact</th>
                             <th>Mobile</th>
                             <th>Type</th>
                             <th>Status</th>
@@ -90,7 +94,7 @@
                         </tr>
                     </thead>
                     <tbody id="recent-customers-body">
-                        <tr><td colspan="7" style="text-align: center; color: #999;">Loading...</td></tr>
+                        <tr><td colspan="7" style="text-align:center;">Loading...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -100,127 +104,60 @@
         <div class="card">
             <div class="card-header"><h2>Pending Services</h2></div>
             <div class="card-body">
-                <table class="table" id="pending-services-table">
+                <table class="table">
                     <thead>
                         <tr>
-                            <th>Service ID</th>
+                            <th>ID</th>
                             <th>Instrument</th>
                             <th>Customer</th>
-                            <th>Service Type</th>
-                            <th>Service Date</th>
+                            <th>Type</th>
+                            <th>Date</th>
                             <th>Status</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody id="pending-services-body">
-                        <tr><td colspan="7" style="text-align: center; color: #999;">Loading...</td></tr>
+                        <tr><td colspan="7" style="text-align:center;">Loading...</td></tr>
                     </tbody>
                 </table>
             </div>
         </div>
+
     </div>
 
+    <!-- Flask static JS -->
     <script src="/static/auth.js"></script>
+
     <script>
-        // Set current date
-        document.getElementById('current-date').innerText = new Date().toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        document.getElementById("current-date").innerText =
+            new Date().toLocaleDateString("en-IN", {
+                weekday: "long",
+                year: "numeric",
+                month: "long",
+                day: "numeric"
+            });
 
-        // Helper function to format date
-        function formatDate(dateStr) {
-            if (!dateStr) return '-';
-            const d = new Date(dateStr);
-            return d.toLocaleDateString('en-IN');
-        }
-
-        // Fetch wrapper with auth
-        function fetchWithAuth(url, options = {}) {
+        function fetchWithAuth(url) {
             const token = localStorage.getItem("auth_token");
-            const headers = { "Content-Type": "application/json", ...options.headers };
-            if (token) headers["Authorization"] = `Bearer ${token}`;
-            return fetch(url, { ...options, headers });
-        }
-
-        // Load statistics
-        function loadStatistics() {
-            fetchWithAuth("/api/customers").then(res => res.json()).then(data => {
-                document.getElementById('total-customers').innerText = Array.isArray(data) ? data.length : 0;
-            }).catch(err => console.error(err));
-
-            fetchWithAuth("/api/instruments").then(res => res.json()).then(data => {
-                document.getElementById('active-instruments').innerText = Array.isArray(data) ? data.length : 0;
-            }).catch(err => console.error(err));
-
-            fetchWithAuth("/api/services?status=Pending").then(res => res.json()).then(data => {
-                document.getElementById('pending-services').innerText = Array.isArray(data) ? data.length : 0;
-            }).catch(err => console.error(err));
-        }
-
-        // Load recent customers
-        function loadRecentCustomers() {
-            fetchWithAuth("/api/customers").then(res => res.json()).then(data => {
-                const tbody = document.getElementById('recent-customers-body');
-                tbody.innerHTML = '';
-                if (!Array.isArray(data) || data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#999">No customers found</td></tr>';
-                    return;
+            return fetch(url, {
+                headers: {
+                    "Authorization": `Bearer ${token}`
                 }
-                data.slice(-5).reverse().forEach(c => {
-                    tbody.innerHTML += `<tr>
-                        <td>${c.customer_id}</td>
-                        <td>${c.customer_name || '-'}</td>
-                        <td>${c.contact_person || '-'}</td>
-                        <td>${c.mobile || '-'}</td>
-                        <td>${c.customer_type || '-'}</td>
-                        <td><strong style="color:${c.status==='Active'?'#28a745':'#dc3545'}">${c.status}</strong></td>
-                        <td>
-                            <a href="view_customer.html?id=${c.customer_id}" class="btn btn-secondary">View</a>
-                            <a href="edit_customer.html?id=${c.customer_id}" class="btn btn-warning">Edit</a>
-                        </td>
-                    </tr>`;
-                });
-            }).catch(err => {
-                document.getElementById('recent-customers-body').innerHTML = '<tr><td colspan="7" style="text-align:center;color:#dc3545">Error loading customers</td></tr>';
             });
         }
 
-        // Load pending services
-        function loadPendingServices() {
-            fetchWithAuth("/api/services?status=Pending").then(res => res.json()).then(data => {
-                const tbody = document.getElementById('pending-services-body');
-                tbody.innerHTML = '';
-                if (!Array.isArray(data) || data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#999">No pending services</td></tr>';
-                    return;
-                }
-                data.slice(0,5).forEach(s => {
-                    tbody.innerHTML += `<tr>
-                        <td>${s.service_id}</td>
-                        <td>${s.instrument_name || '-'}</td>
-                        <td>${s.customer_name || '-'}</td>
-                        <td>${s.service_type || '-'}</td>
-                        <td>${formatDate(s.service_date)}</td>
-                        <td><strong style="color:#ffc107">${s.status}</strong></td>
-                        <td><a href="edit_service.html?id=${s.service_id}" class="btn btn-warning">Update</a></td>
-                    </tr>`;
-                });
-            }).catch(err => {
-                document.getElementById('pending-services-body').innerHTML = '<tr><td colspan="7" style="text-align:center;color:#dc3545">Error loading services</td></tr>';
-            });
-        }
-
-        // Check auth and load dashboard
-        window.addEventListener('load', () => {
+        window.addEventListener("load", () => {
             if (!localStorage.getItem("auth_token")) {
                 window.location.href = "/login";
                 return;
             }
-            const userRole = localStorage.getItem("user_role");
-            if (userRole === "Admin") document.getElementById("admin-link").style.display = "block";
 
-            loadStatistics();
-            loadRecentCustomers();
-            loadPendingServices();
+            const role = localStorage.getItem("user_role");
+            if (role === "Admin") {
+                document.getElementById("admin-link").style.display = "block";
+            }
         });
     </script>
+
 </body>
 </html>
