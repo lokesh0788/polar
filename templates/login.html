@@ -339,74 +339,47 @@
     
     <script src="auth.js"></script>
     <script>
-        function handleLogin(event) {
-            event.preventDefault();
-            
-            const email = document.getElementById("email").value;
-            const password = document.getElementById("password").value;
-            const messageDiv = document.getElementById("message");
-            const loginBtn = document.getElementById("loginBtn");
-            
-            if (!email || !password) {
-                showMessage(messageDiv, "Please fill in all fields", "error");
-                return;
-            }
-            
-            // Disable button and show loading state
-            loginBtn.disabled = true;
-            loginBtn.textContent = "Signing in...";
-            
-            const data = {
-                email: email,
-                password: password
-            };
-            
-            fetch("/api/login", {
-                method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify(data)
-            })
-            .then(res => res.json())
-            .then(res => {
-                if (res.error) {
-                    showMessage(messageDiv, res.error, "error");
-                    loginBtn.disabled = false;
-                    loginBtn.textContent = "Sign In";
-                } else if (res.token) {
-                    // Store token in localStorage
-                    localStorage.setItem("auth_token", res.token);
-                    localStorage.setItem("user_id", res.user_id);
-                    localStorage.setItem("user_name", res.user_name);
-                    localStorage.setItem("user_role", res.role);
-                    
-                    showMessage(messageDiv, "✓ Login successful! Redirecting...", "success");
-                    
-                    // Redirect to dashboard after 1.5 seconds
-                    setTimeout(() => {
-                        window.location.href = "dashboard.html";
-                    }, 1500);
-                }
-            })
-            .catch(err => {
-                showMessage(messageDiv, "Connection error: " + err.message, "error");
-                loginBtn.disabled = false;
-                loginBtn.textContent = "Sign In";
-            });
-        }
-        
-        function showMessage(element, message, type) {
-            element.innerText = message;
-            element.className = "message " + type;
-        }
+function handleLogin(event) {
+    event.preventDefault();
 
-        // Allow Enter key to submit form
-        document.addEventListener("DOMContentLoaded", function() {
-            document.getElementById("password").addEventListener("keypress", function(e) {
-                if (e.key === "Enter") {
-                    document.querySelector("form").dispatchEvent(new Event("submit"));
-                }
-            });
-        });
-    </script>
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    const messageDiv = document.getElementById("message");
+    const loginBtn = document.getElementById("loginBtn");
+
+    loginBtn.disabled = true;
+    loginBtn.textContent = "Signing in...";
+
+    fetch("/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password })
+    })
+    .then(res => res.json())
+    .then(res => {
+        if (!res.success) {
+            messageDiv.className = "message error";
+            messageDiv.innerText = res.error;
+            loginBtn.disabled = false;
+            loginBtn.textContent = "Sign In";
+        } else {
+            localStorage.setItem("user_email", res.email);
+
+            messageDiv.className = "message success";
+            messageDiv.innerText = "Login successful";
+
+            setTimeout(() => {
+                window.location.href = "/dashboard";
+            }, 1000);
+        }
+    })
+    .catch(() => {
+        messageDiv.className = "message error";
+        messageDiv.innerText = "Server error";
+        loginBtn.disabled = false;
+        loginBtn.textContent = "Sign In";
+    });
+}
+</script>
 </body>
 </html>
