@@ -13,17 +13,17 @@ def get_db_connection():
         user=os.getenv("MYSQLUSER"),
         password=os.getenv("MYSQLPASSWORD"),
         database=os.getenv("MYSQLDATABASE"),
-        port=int(os.getenv("MYSQLPORT"))
+        port=int(os.getenv("MYSQLPORT", 3306))
     )
 
 # ---------------- ROUTES ----------------
 @app.route("/")
 def login_page():
-    return render_template("/login.html")
+    return render_template("login.html")
 
 @app.route("/dashboard")
 def dashboard():
-    return render_template("/dashboard.html")
+    return render_template("dashboard.html")
 
 # ---------------- LOGIN HANDLER ----------------
 @app.route("/login", methods=["POST"])
@@ -35,27 +35,26 @@ def login():
     cursor = conn.cursor(dictionary=True)
 
     cursor.execute(
-        "SELECT name, password FROM users WHERE name=%s AND password=%s",
+        "SELECT name FROM users WHERE name=%s AND password=%s",
         (email, password)
     )
-    
+    user = cursor.fetchone()
 
     cursor.close()
     conn.close()
 
     if user:
-        return render_template(
-            "/dashboard.html"
-        )
+        return redirect(url_for("dashboard"))
     else:
         return render_template(
-            "/login.html",
+            "login.html",
             error="Invalid email or password"
         )
 
 # ---------------- MAIN ----------------
 if __name__ == "__main__":
     app.run(debug=flase)
+
 
 
 
