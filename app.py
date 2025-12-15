@@ -19,6 +19,15 @@ def get_db_connection():
 # ---------------- ROUTES ----------------
 @app.route("/")
 def login_page():
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("SELECT name FROM users")
+    users = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
     return render_template("login.html")
 
 @app.route("/dashboard")
@@ -54,6 +63,7 @@ def login():
 # ---------------- MAIN ----------------
 if __name__ == "__main__":
     app.run(debug=flase)
+
 
 
 
