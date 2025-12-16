@@ -1,21 +1,10 @@
-from flask import Flask, render_template, request, jsonify, session, redirect, url_for
-from functools import wraps
+from flask import Flask, render_template, request, jsonify
 from flask_cors import CORS
 import mysql.connector
 import os
 
 app = Flask(__name__)
-app.secret_key = "aiuerhiueahriuehriuahiurwdsijfncvvfvvvuvoidsvifnjhfiufdskjfna"
-
 CORS(app)
-#-------------------Authentication-decorater------------------#
-def login_required(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if "user" not in session:
-            return redirect(url_for("login_page"))
-        return f(*args, **kwargs)
-    return decorated_function
 
 # ---------------- MySQL Connection ----------------
 def get_db_connection():
@@ -38,8 +27,9 @@ def login_page():
     return render_template("login.html")
 
 @app.route("/dashboard")
-def dashboradpage():
+def dashboard():
     return render_template("dashboard.html")
+
 # ---------------- LOGIN API ----------------
 @app.route("/api/login", methods=["POST"])
 def login_api():
@@ -61,10 +51,9 @@ def login_api():
     conn.close()
 
     if user:
-        session["user"] = user["name"]  
-        return jsonify({"success": True})
+        return jsonify({"success": True, "email": user["name"]})
     else:
-        return jsonify({"success": False, "error": "Invalid credentials"}), 401
+        return jsonify({"success": False, "error": "Invalid email or password"}), 401
 
 # ---------------- Customers ----------------
 @app.route("/api/customers")
@@ -232,14 +221,6 @@ def amc_details(i_serial):
 # ---------------- MAIN ----------------
 if __name__ == "__main__":
     app.run(debug=False)
-
-
-
-
-
-
-
-
 
 
 
