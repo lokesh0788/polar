@@ -69,7 +69,7 @@ nav a:hover {
   color:var(--muted);
 }
 
-.lk {
+#lk {
   width: 100%;
   margin-top: 10px;
   background: linear-gradient(145deg, #402020, #1c0f0f);
