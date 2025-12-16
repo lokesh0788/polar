@@ -3,8 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>AI Command Dashboard | Service Management</title>
-
-  <!-- Desktop-first viewport -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- Premium Fonts -->
@@ -16,128 +14,118 @@
 
 <body>
 
-<!-- ================= APP WRAPPER ================= -->
-<div class="app-layout">
+<!-- ================= SIDEBAR ================= -->
+<aside class="sidebar">
+  <div class="brand">
+    ⚙️ <span>POLAR ANALYTICS</span>
+    <small>Service Intelligence</small>
+  </div>
 
-  <!-- ================= SIDEBAR ================= -->
-  <aside class="sidebar">
-    <div class="brand">
-      ⚙️ <span>POLAR ANALYTICS</span>
-      <small>Service Intelligence</small>
+  <nav>
+    <a class="active" href="{{ url_for('dashboard') }}">Dashboard</a>
+    <a href="#">Customers</a>
+    <a href="#">Instruments</a>
+    <a href="#">Service Records</a>
+    <a href="#">Data Export</a>
+    <a href="#">User Control</a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div id="user-email">—</div>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+    <small>AI Engine • v1.0</small>
+  </div>
+</aside>
+
+<!-- ================= MAIN ================= -->
+<main class="main">
+
+  <!-- HEADER -->
+  <header class="topbar">
+    <div>
+      <h1>Command Dashboard</h1>
+      <p>Operational Intelligence Overview</p>
+    </div>
+    <div class="date" id="current-date"></div>
+  </header>
+
+  <!-- ================= STATS ================= -->
+  <section class="stats">
+    <div class="stat bronze">
+      <h3>Total Clients</h3>
+      <span id="total-customers">—</span>
     </div>
 
-    <nav class="nav-links">
-      <a class="active" href="{{ url_for('dashboard') }}">Dashboard</a>
-      <a href="#">Customers</a>
-      <a href="#">Instruments</a>
-      <a href="#">Service Records</a>
-      <a href="#">Data Export</a>
-      <a href="#">User Control</a>
-    </nav>
-
-    <div class="sidebar-footer">
-      <div id="user-email">—</div>
-      <button class="logout-btn" onclick="logout()">Logout</button>
-      <small>AI Engine • v1.0</small>
+    <div class="stat steel">
+      <h3>Instruments</h3>
+      <span id="active-instruments">—</span>
     </div>
-  </aside>
 
-  <!-- ================= MAIN CONTENT ================= -->
-  <main class="main">
+    <div class="stat amber">
+      <h3>Pending Services</h3>
+      <span id="pending-services">—</span>
+    </div>
 
-    <!-- ================= HEADER ================= -->
-    <header class="topbar">
-      <div class="title-block">
-        <h1>Command Dashboard</h1>
-        <p>Operational Intelligence Overview</p>
+    <div class="stat crimson">
+      <h3>Critical Alerts</h3>
+      <span id="critical-issues">—</span>
+    </div>
+  </section>
+
+  <!-- ================= GRID ================= -->
+  <section class="grid">
+
+    <!-- RECENT CUSTOMERS -->
+    <div class="panel">
+      <h2>Recent Clients</h2>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Company ID</th>
+              <th>Company Name</th>
+              <th>Contact Person</th>
+              <th>Phone</th>
+            </tr>
+          </thead>
+          <tbody id="recent-customers-body">
+            <tr>
+              <td colspan="4">Loading intelligence…</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
+    </div>
 
-      <div class="date" id="current-date"></div>
-    </header>
+    <!-- PENDING SERVICES -->
+    <div class="panel">
+      <h2>Pending Service Actions</h2>
 
-    <!-- ================= STAT CARDS ================= -->
-    <section class="stats">
-
-      <div class="stat bronze">
-        <h3>Total Clients</h3>
-        <span id="total-customers">—</span>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Instrument</th>
+              <th>Client</th>
+              <th>Report Date</th>
+            </tr>
+          </thead>
+          <tbody id="pending-services-body">
+            <tr>
+              <td colspan="4">Analyzing service logs…</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
+    </div>
 
-      <div class="stat steel">
-        <h3>Instruments</h3>
-        <span id="active-instruments">—</span>
-      </div>
+  </section>
 
-      <div class="stat amber">
-        <h3>Pending Services</h3>
-        <span id="pending-services">—</span>
-      </div>
+</main>
 
-      <div class="stat crimson">
-        <h3>Critical Alerts</h3>
-        <span id="critical-issues">—</span>
-      </div>
-
-    </section>
-
-    <!-- ================= DATA GRID ================= -->
-    <section class="grid">
-
-      <!-- ===== RECENT CUSTOMERS ===== -->
-      <div class="panel">
-        <h2>Recent Clients</h2>
-
-        <div class="table-wrapper">
-          <table>
-            <thead>
-              <tr>
-                <th>Company ID</th>
-                <th>Company Name</th>
-                <th>Contact Person</th>
-                <th>Contact Phone</th>
-              </tr>
-            </thead>
-
-            <tbody id="recent-customers-body">
-              <tr>
-                <td colspan="4">Loading intelligence…</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- ===== PENDING SERVICES ===== -->
-      <div class="panel">
-        <h2>Pending Service Actions</h2>
-
-        <div class="table-wrapper">
-          <table>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Instrument</th>
-                <th>Client</th>
-                <th>Report Date</th>
-              </tr>
-            </thead>
-
-            <tbody id="pending-services-body">
-              <tr>
-                <td colspan="4">Analyzing service logs…</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-    </section>
-
-  </main>
-
-</div>
-
-<!-- ================= AUTH SCRIPT ================= -->
+<!-- ================= AUTH ================= -->
 <script src="{{ url_for('static', filename='auth.js') }}"></script>
 
 <script>
