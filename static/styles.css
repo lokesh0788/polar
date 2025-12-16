@@ -1,17 +1,21 @@
-/* ==========================================
-   DESIGN SYSTEM — CLASSY ENTERPRISE AI
-   ========================================== */
+/* ==================================================
+   PREMIUM VINTAGE ENTERPRISE AI DESIGN SYSTEM
+   ================================================== */
 
 :root {
-  --bg-main: #0e1117;
-  --bg-card: #161b22;
-  --accent-primary: #5da9ff;
-  --accent-soft: #9cc8ff;
-  --text-main: #f0f4fa;
-  --text-muted: #9aa4b2;
-  --border-subtle: rgba(255, 255, 255, 0.06);
-  --shadow-soft: rgba(0, 0, 0, 0.55);
+  --bg-main: #0c1016;
+  --bg-card: #151a22;
+  --accent-primary: #6fa3ff;
+  --accent-warm: #c8a46a;
+  --text-main: #eef2f7;
+  --text-muted: #9aa3b2;
+  --border-subtle: rgba(255, 255, 255, 0.05);
+  --shadow-deep: rgba(0, 0, 0, 0.7);
 }
+
+/* ==================================================
+   GLOBAL RESET
+   ================================================== */
 
 * {
   box-sizing: border-box;
@@ -21,29 +25,72 @@
 body {
   margin: 0;
   min-height: 100vh;
-  background:
-    radial-gradient(1200px circle at 10% 10%, #16213a, transparent 45%),
-    radial-gradient(900px circle at 90% 90%, #0b2a3d, transparent 40%),
-    var(--bg-main);
+  background: linear-gradient(120deg, #0b0f14, #0f1623, #0b0f14);
+  background-size: 300% 300%;
+  animation: bgFlow 40s ease infinite;
   display: flex;
   justify-content: center;
   align-items: center;
   color: var(--text-main);
+  overflow: hidden;
 }
 
-/* ==========================================
-   CONTAINER ANIMATION
-   ========================================== */
+@keyframes bgFlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ==================================================
+   FLOATING AMBIENT LIGHTS (REALISTIC MOTION)
+   ================================================== */
+
+body::before,
+body::after {
+  content: "";
+  position: absolute;
+  width: 420px;
+  height: 420px;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.25;
+  animation: floatSlow 30s infinite alternate ease-in-out;
+  z-index: 0;
+}
+
+body::before {
+  background: #1b3a6b;
+  top: 10%;
+  left: 8%;
+}
+
+body::after {
+  background: #6b5632;
+  bottom: 12%;
+  right: 10%;
+  animation-delay: 6s;
+}
+
+@keyframes floatSlow {
+  from { transform: translateY(0px) translateX(0px); }
+  to { transform: translateY(-60px) translateX(40px); }
+}
+
+/* ==================================================
+   CONTAINER
+   ================================================== */
 
 .container {
+  position: relative;
   text-align: center;
-  animation: smoothAppear 0.9s ease-out;
+  z-index: 1;
+  animation: fadeLift 1.2s ease-out;
 }
 
-@keyframes smoothAppear {
+@keyframes fadeLift {
   from {
     opacity: 0;
-    transform: translateY(16px);
+    transform: translateY(22px);
   }
   to {
     opacity: 1;
@@ -51,19 +98,19 @@ body {
   }
 }
 
-/* ==========================================
-   LOGO AREA
-   ========================================== */
+/* ==================================================
+   LOGO
+   ================================================== */
 
 .logo {
-  margin-bottom: 34px;
+  margin-bottom: 36px;
 }
 
 .logo-icon {
-  width: 62px;
-  height: 62px;
-  background: linear-gradient(145deg, #5da9ff, #3d7fe0);
-  border-radius: 16px;
+  width: 64px;
+  height: 64px;
+  border-radius: 18px;
+  background: linear-gradient(145deg, #6fa3ff, #3c5fa3);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -71,77 +118,77 @@ body {
   color: #ffffff;
   margin: 0 auto 14px;
   box-shadow:
-    0 14px 30px rgba(0, 0, 0, 0.6),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    0 18px 40px rgba(0,0,0,0.6),
+    inset 0 1px 1px rgba(255,255,255,0.2);
 }
 
 .logo h1 {
   font-size: 22px;
   margin: 0;
-  letter-spacing: 0.5px;
   font-weight: 600;
+  letter-spacing: 0.6px;
 }
 
 .logo p {
   font-size: 13px;
   margin-top: 6px;
   color: var(--text-muted);
-  letter-spacing: 0.4px;
+  letter-spacing: 0.5px;
 }
 
-/* ==========================================
-   CARD — PREMIUM GLASS PANEL
-   ========================================== */
+/* ==================================================
+   CARD – REALISTIC GLASS + METAL
+   ================================================== */
 
 .card {
-  width: 392px;
-  padding: 34px;
+  width: 400px;
+  padding: 36px;
   background:
-    linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0)),
+    linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0)),
     var(--bg-card);
-  border-radius: 18px;
+  border-radius: 20px;
   border: 1px solid var(--border-subtle);
+  backdrop-filter: blur(18px);
   box-shadow:
-    0 28px 60px var(--shadow-soft),
+    0 35px 80px var(--shadow-deep),
     inset 0 0 0 1px rgba(255,255,255,0.02);
-  backdrop-filter: blur(16px);
 }
 
 .card h2 {
   text-align: left;
   font-size: 20px;
   font-weight: 600;
-  margin-bottom: 24px;
+  margin-bottom: 26px;
 }
 
-/* ==========================================
+/* ==================================================
    FORM
-   ========================================== */
+   ================================================== */
 
 label {
   font-size: 12.5px;
-  letter-spacing: 0.4px;
   color: var(--text-muted);
   display: block;
   margin-bottom: 6px;
   text-align: left;
+  letter-spacing: 0.4px;
 }
 
 .input-box {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 13px 14px;
-  margin-bottom: 20px;
-  background: rgba(255, 255, 255, 0.02);
+  padding: 14px 15px;
+  margin-bottom: 22px;
   border-radius: 14px;
+  background: rgba(255,255,255,0.03);
   border: 1px solid var(--border-subtle);
-  transition: all 0.25s ease;
+  transition: all 0.3s ease;
 }
 
 .input-box span {
-  color: var(--accent-primary);
   font-size: 15px;
+  color: var(--accent-warm);
 }
 
 .input-box input {
@@ -151,40 +198,39 @@ label {
   background: transparent;
   color: var(--text-main);
   font-size: 14px;
-  letter-spacing: 0.3px;
 }
 
 .input-box:focus-within {
   border-color: var(--accent-primary);
-  box-shadow: 0 0 0 2px rgba(93, 169, 255, 0.25);
+  box-shadow:
+    0 0 0 2px rgba(111,163,255,0.25);
 }
 
-/* ==========================================
-   PRIMARY BUTTON
-   ========================================== */
+/* ==================================================
+   BUTTON – WEIGHTED, MECHANICAL FEEL
+   ================================================== */
 
 .btn-primary {
   width: 100%;
-  padding: 14px;
-  border-radius: 14px;
+  padding: 15px;
+  border-radius: 15px;
   border: none;
   cursor: pointer;
-  background: linear-gradient(145deg, #5da9ff, #4a8df0);
+  background: linear-gradient(145deg, #6fa3ff, #4a78c7);
   color: #ffffff;
   font-size: 15px;
   font-weight: 500;
   letter-spacing: 0.4px;
   box-shadow:
-    0 16px 30px rgba(0, 0, 0, 0.5),
-    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+    0 18px 35px rgba(0,0,0,0.55),
+    inset 0 1px 1px rgba(255,255,255,0.25);
   transition: all 0.25s ease;
 }
 
 .btn-primary:hover {
   transform: translateY(-1px);
   box-shadow:
-    0 20px 40px rgba(0, 0, 0, 0.6),
-    0 0 0 3px rgba(93, 169, 255, 0.25);
+    0 22px 45px rgba(0,0,0,0.65);
 }
 
 .btn-primary:disabled {
@@ -192,93 +238,26 @@ label {
   cursor: not-allowed;
 }
 
-/* ==========================================
-   FEEDBACK MESSAGE
-   ========================================== */
+/* ==================================================
+   MESSAGE
+   ================================================== */
 
 .message {
-  margin-top: 14px;
-  padding: 10px 12px;
-  border-radius: 12px;
+  margin-top: 16px;
+  padding: 11px 14px;
+  border-radius: 14px;
   font-size: 13px;
   text-align: center;
 }
 
 .message.error {
-  background: rgba(255, 90, 90, 0.12);
-  color: #ff6f6f;
-  border: 1px solid rgba(255, 90, 90, 0.35);
+  background: rgba(180, 70, 70, 0.14);
+  color: #ff8a8a;
+  border: 1px solid rgba(180, 70, 70, 0.35);
 }
 
 .message.success {
-  background: rgba(0, 210, 160, 0.12);
-  color: #00d2a0;
-  border: 1px solid rgba(0, 210, 160, 0.35);
-}
-
-/* ==========================================
-   DIVIDER
-   ========================================== */
-
-.divider {
-  margin: 26px 0;
-  font-size: 12px;
-  color: var(--text-muted);
-  position: relative;
-}
-
-.divider::before,
-.divider::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  width: 34%;
-  height: 1px;
-  background: var(--border-subtle);
-}
-
-.divider::before { left: 0; }
-.divider::after { right: 0; }
-
-/* ==========================================
-   GOOGLE BUTTON
-   ========================================== */
-
-.btn-google {
-  width: 100%;
-  padding: 12px;
-  border-radius: 14px;
-  border: 1px solid var(--border-subtle);
-  background: rgba(255, 255, 255, 0.02);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  font-size: 14px;
-  color: var(--text-muted);
-  cursor: not-allowed;
-}
-
-.btn-google img {
-  width: 18px;
-  opacity: 0.7;
-}
-
-/* ==========================================
-   FOOTER
-   ========================================== */
-
-.signup-text {
-  margin-top: 22px;
-  font-size: 13px;
-  color: var(--text-muted);
-}
-
-.signup-text a {
-  color: var(--accent-primary);
-  text-decoration: none;
-}
-
-.signup-text a:hover {
-  text-decoration: underline;
+  background: rgba(70, 180, 140, 0.14);
+  color: #7fffd4;
+  border: 1px solid rgba(70, 180, 140, 0.35);
 }
