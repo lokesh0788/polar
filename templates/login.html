@@ -49,7 +49,9 @@
 </div>
 
 <script>
-function handleLogin(event) {
+// static/js/auth.js
+
+export function handleLogin(event) {
     event.preventDefault();
 
     const email = document.getElementById("email").value.trim();
@@ -62,38 +64,36 @@ function handleLogin(event) {
     loginBtn.innerText = "Signing in...";
 
     fetch("/api/login", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    credentials: "include",  
-    body: JSON.stringify({ email, password })
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password })
     })
     .then(res => res.json())
     .then(data => {
         if (!data.success) {
             messageDiv.className = "message error";
-            messageDiv.innerText = data.error || "Invalid credentials";
+            messageDiv.innerText = data.error || "Login failed";
             messageDiv.style.display = "block";
-    
             loginBtn.disabled = false;
             loginBtn.innerText = "→ Sign In";
         } else {
             messageDiv.className = "message success";
             messageDiv.innerText = "Login successful. Redirecting...";
             messageDiv.style.display = "block";
-    
+
             setTimeout(() => {
-                window.location.href = "/dashboard";   
-            }, 800);
+                window.location.href = "/dashboard";
+            }, 700);
         }
     })
     .catch(() => {
         messageDiv.className = "message error";
-        messageDiv.innerText = "Server error. Please try again.";
+        messageDiv.innerText = "Server error";
         messageDiv.style.display = "block";
-    
         loginBtn.disabled = false;
         loginBtn.innerText = "→ Sign In";
     });
+}
 
 </script>
 
