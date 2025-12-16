@@ -2,115 +2,163 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Dashboard | Service Management</title>
-  <link rel="stylesheet" href="/static/styles.css">
+  <title>AI Command Dashboard | Service Management</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
 </head>
+
 <body>
 
-<nav class="navbar">
-  <div class="navbar-brand">⚙️ Polar Analytical</div>
-</nav>
-
-<div class="container">
-
-  <div class="page-header">
-    <h1>Dashboard</h1>
-    <p id="current-date"></p>
+<!-- ================= SIDEBAR ================= -->
+<aside class="sidebar">
+  <div class="brand">
+    ⚙️ <span>POLAR ANALYTICS</span>
+    <small>Service Intelligence</small>
   </div>
 
-  <!-- STATS -->
-  <div class="stats-grid">
-    <div class="stat-card primary">
-      <h3>Total Companies</h3>
-      <div class="number" id="customers">0</div>
+  <nav>
+    <a class="active">Dashboard</a>
+    <a href="customers.html">Customers</a>
+    <a href="instruments.html">Instruments</a>
+    <a href="services.html">Service Records</a>
+    <a href="export.html">Data Export</a>
+    <a href="admin_users.html">User Control</a>
+  </nav>
+
+  <div class="sidebar-footer">
+    AI Engine • v1.0
+  </div>
+</aside>
+
+<!-- ================= MAIN ================= -->
+<main class="main">
+
+  <!-- HEADER -->
+  <header class="topbar">
+    <div>
+      <h1>Command Dashboard</h1>
+      <p>Operational Intelligence Overview</p>
     </div>
-    <div class="stat-card success">
-      <h3>Total Instruments</h3>
-      <div class="number" id="instruments">0</div>
+
+    <div class="date" id="current-date"></div>
+  </header>
+
+  <!-- ================= STATS ================= -->
+  <section class="stats">
+    <div class="stat bronze">
+      <h3>Total Clients</h3>
+      <span id="total-customers">—</span>
     </div>
-    <div class="stat-card warning">
+
+    <div class="stat steel">
+      <h3>Instruments</h3>
+      <span id="active-instruments">—</span>
+    </div>
+
+    <div class="stat amber">
       <h3>Pending Services</h3>
-      <div class="number" id="pending">0</div>
+      <span id="pending-services">—</span>
     </div>
-    <div class="stat-card danger">
-      <h3>Critical Issues</h3>
-      <div class="number">0</div>
+
+    <div class="stat crimson">
+      <h3>Critical Alerts</h3>
+      <span id="critical-issues">0</span>
     </div>
-  </div>
+  </section>
 
-  <!-- RECENT CUSTOMERS -->
-  <div class="card">
-    <h2>Recent Customers</h2>
-    <table class="table">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Company</th>
-          <th>Type</th>
-          <th>Contact</th>
-          <th>Phone</th>
-        </tr>
-      </thead>
-      <tbody id="customers-table"></tbody>
-    </table>
-  </div>
+  <!-- ================= GRID ================= -->
+  <section class="grid">
 
-  <!-- PENDING SERVICES -->
-  <div class="card">
-    <h2>Pending Services</h2>
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Service ID</th>
-          <th>Instrument</th>
-          <th>Company</th>
-          <th>Issue</th>
-          <th>Date</th>
-        </tr>
-      </thead>
-      <tbody id="services-table"></tbody>
-    </table>
-  </div>
+    <!-- RECENT CUSTOMERS -->
+    <div class="panel">
+      <h2>Recent Clients</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Company</th>
+            <th>Contact</th>
+            <th>Phone</th>
+          </tr>
+        </thead>
+        <tbody id="recent-customers-body">
+          <tr><td colspan="4">Loading intelligence...</td></tr>
+        </tbody>
+      </table>
+    </div>
 
-</div>
+    <!-- PENDING SERVICES -->
+    <div class="panel">
+      <h2>Pending Service Actions</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Instrument</th>
+            <th>Client</th>
+            <th>Reported</th>
+          </tr>
+        </thead>
+        <tbody id="pending-services-body">
+          <tr><td colspan="4">Analyzing service logs...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </section>
+
+</main>
+
+<script src="{{ url_for('static', filename='auth.js') }}"></script>
 
 <script>
+checkAuth();
+
+const date = new Date();
 document.getElementById("current-date").innerText =
-  new Date().toDateString();
+  date.toLocaleDateString("en-IN", { weekday:'long', year:'numeric', month:'long', day:'numeric' });
 
-fetch("/api/dashboard/stats")
-  .then(res => res.json())
-  .then(d => {
-    customers.innerText = d.customers;
-    instruments.innerText = d.instruments;
-    pending.innerText = d.pending_services;
-  });
+// Load stats
+fetchWithAuth("/api/dashboard/stats").then(r=>r.json()).then(d=>{
+  total-customers.innerText = d.customers;
+  active-instruments.innerText = d.instruments;
+  pending-services.innerText = d.pending_services;
+  critical-issues.innerText = d.critical;
+});
 
-fetch("/api/customers/recent")
-  .then(res => res.json())
-  .then(data => {
-    customers_table.innerHTML = data.map(c => `
+// Recent customers
+fetchWithAuth("/api/customers/recent").then(r=>r.json()).then(data=>{
+  const body = document.getElementById("recent-customers-body");
+  body.innerHTML = "";
+  data.forEach(c=>{
+    body.innerHTML += `
       <tr>
         <td>${c.company_id}</td>
         <td>${c.company_name}</td>
-        <td>${c.company_type}</td>
         <td>${c.contact_name}</td>
         <td>${c.contact_phone}</td>
-      </tr>`).join("");
+      </tr>`;
   });
+});
 
-fetch("/api/services/pending")
-  .then(res => res.json())
-  .then(data => {
-    services_table.innerHTML = data.map(s => `
+// Pending services
+fetchWithAuth("/api/services/pending").then(r=>r.json()).then(data=>{
+  const body = document.getElementById("pending-services-body");
+  body.innerHTML = "";
+  data.forEach(s=>{
+    body.innerHTML += `
       <tr>
         <td>${s.id}</td>
         <td>${s.i_serial}</td>
         <td>${s.company_name}</td>
-        <td>${s.problem_reported}</td>
         <td>${s.start_date}</td>
-      </tr>`).join("");
+      </tr>`;
   });
+});
 </script>
 
 </body>
