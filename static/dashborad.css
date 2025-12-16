@@ -19,10 +19,12 @@
 body {
   margin:0;
   display:flex;
+  flex-direction:row;
   background:
     radial-gradient(1200px at 10% 10%, #1c2436, transparent),
     var(--bg-main);
   color:var(--text);
+  min-height:100vh;
 }
 
 /* ===== SIDEBAR ===== */
@@ -79,11 +81,12 @@ nav a:hover {
   background: linear-gradient(145deg, #552525, #2a1414);
 }
 
-
 /* ===== MAIN ===== */
 .main {
   flex:1;
   padding:30px 40px;
+  display:flex;
+  flex-direction:column;
 }
 
 /* HEADER */
@@ -92,6 +95,7 @@ nav a:hover {
   justify-content:space-between;
   align-items:center;
   margin-bottom:30px;
+  flex-wrap:wrap;
 }
 
 .topbar h1 {
@@ -138,6 +142,7 @@ nav a:hover {
   gap:30px;
 }
 
+/* PANEL */
 .panel {
   background:var(--bg-panel);
   border:1px solid var(--border);
@@ -151,10 +156,16 @@ nav a:hover {
 }
 
 /* TABLE */
+.table-container {
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+}
+
 table {
   width:100%;
   border-collapse:collapse;
   font-size:13px;
+  min-width:600px; /* keeps table readable */
 }
 
 thead th {
@@ -166,4 +177,39 @@ thead th {
 tbody td {
   padding:10px 0;
   border-bottom:1px solid var(--border);
+}
+
+/* ===== MOBILE RESPONSIVENESS ===== */
+@media (max-width:1024px) {
+  .stats {
+    grid-template-columns:repeat(2,1fr);
+  }
+  .grid {
+    grid-template-columns:1fr;
+  }
+}
+
+@media (max-width:600px) {
+  body {
+    flex-direction:column;
+  }
+  .sidebar {
+    width:100%;
+    border-right:none;
+    border-bottom:1px solid var(--border);
+    padding:16px;
+  }
+  .main {
+    padding:20px;
+  }
+  .topbar {
+    flex-direction:column;
+    align-items:flex-start;
+  }
+  .stats {
+    grid-template-columns:1fr;
+  }
+  table {
+    font-size:12px;
+  }
 }
