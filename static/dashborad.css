@@ -69,6 +69,18 @@ nav a:hover {
   color:var(--muted);
 }
 
+.lk {
+  width: 100%;
+  margin-top: 10px;
+  background: linear-gradient(145deg, #402020, #1c0f0f);
+  color: #ffb3b3;
+}
+
+.lk:hover {
+  background: linear-gradient(145deg, #552525, #2a1414);
+}
+
+
 /* ===== MAIN ===== */
 .main {
   flex:1;
