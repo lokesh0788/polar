@@ -1,230 +1,116 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard | Service Management System</title>
-
-    <!-- Flask static CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <meta charset="UTF-8">
+  <title>Dashboard | Service Management</title>
+  <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
 
-<!-- ================= NAVBAR ================= -->
 <nav class="navbar">
-    <div class="navbar-container">
-        <div class="navbar-brand">
-            ⚙️ Polar Analytical – Service Management
-        </div>
-
-        <ul class="navbar-menu">
-            <li><a href="/dashboard" class="active">Dashboard</a></li>
-            <li><a href="/customers">Customers</a></li>
-            <li><a href="/instruments">Instruments</a></li>
-            <li><a href="/services">Services</a></li>
-            <li><a href="/export">Export</a></li>
-            <li id="admin-link" style="display:none;">
-                <a href="/admin_users">User Management</a>
-            </li>
-        </ul>
-
-        <div class="user-menu">
-            <span id="user-email"></span>
-            <button class="btn btn-danger btn-sm" onclick="logout()">Logout</button>
-        </div>
-    </div>
+  <div class="navbar-brand">⚙️ Polar Analytical</div>
 </nav>
 
-<!-- ================= MAIN ================= -->
 <div class="container">
 
-    <!-- Header -->
-    <div class="page-header">
-        <div>
-            <h1>Dashboard</h1>
-            <p>Service overview and quick actions</p>
-        </div>
-        <div>
-            <p id="current-date"></p>
-        </div>
-    </div>
+  <div class="page-header">
+    <h1>Dashboard</h1>
+    <p id="current-date"></p>
+  </div>
 
-    <!-- Stats -->
-    <div class="stats-grid">
-        <div class="stat-card primary">
-            <h3>Total Customers</h3>
-            <div class="number" id="total-customers">0</div>
-        </div>
-        <div class="stat-card success">
-            <h3>Active Instruments</h3>
-            <div class="number" id="active-instruments">0</div>
-        </div>
-        <div class="stat-card warning">
-            <h3>Pending Services</h3>
-            <div class="number" id="pending-services">0</div>
-        </div>
-        <div class="stat-card danger">
-            <h3>Critical Issues</h3>
-            <div class="number">0</div>
-        </div>
+  <!-- STATS -->
+  <div class="stats-grid">
+    <div class="stat-card primary">
+      <h3>Total Companies</h3>
+      <div class="number" id="customers">0</div>
     </div>
+    <div class="stat-card success">
+      <h3>Total Instruments</h3>
+      <div class="number" id="instruments">0</div>
+    </div>
+    <div class="stat-card warning">
+      <h3>Pending Services</h3>
+      <div class="number" id="pending">0</div>
+    </div>
+    <div class="stat-card danger">
+      <h3>Critical Issues</h3>
+      <div class="number">0</div>
+    </div>
+  </div>
 
-    <!-- Quick Actions -->
-    <div class="card">
-        <div class="card-header">
-            <h2>Quick Actions</h2>
-        </div>
-        <div class="card-body quick-actions">
-            <a href="/add_customer" class="btn btn-primary">➕ Add Customer</a>
-            <a href="/add_instrument" class="btn btn-primary">🔧 Add Instrument</a>
-            <a href="/add_service" class="btn btn-success">✔️ Record Service</a>
-            <a href="/reports" class="btn btn-secondary">📊 Reports</a>
-        </div>
-    </div>
+  <!-- RECENT CUSTOMERS -->
+  <div class="card">
+    <h2>Recent Customers</h2>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Company</th>
+          <th>Type</th>
+          <th>Contact</th>
+          <th>Phone</th>
+        </tr>
+      </thead>
+      <tbody id="customers-table"></tbody>
+    </table>
+  </div>
 
-    <!-- Recent Customers -->
-    <div class="card">
-        <div class="card-header">
-            <h2>Recent Customers</h2>
-        </div>
-        <div class="card-body">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Contact</th>
-                        <th>Mobile</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody id="recent-customers-body">
-                    <tr>
-                        <td colspan="6" class="text-muted">Loading...</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- Pending Services -->
-    <div class="card">
-        <div class="card-header">
-            <h2>Pending Services</h2>
-        </div>
-        <div class="card-body">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Instrument</th>
-                        <th>Customer</th>
-                        <th>Type</th>
-                        <th>Date</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody id="pending-services-body">
-                    <tr>
-                        <td colspan="6" class="text-muted">Loading...</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
+  <!-- PENDING SERVICES -->
+  <div class="card">
+    <h2>Pending Services</h2>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Service ID</th>
+          <th>Instrument</th>
+          <th>Company</th>
+          <th>Issue</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody id="services-table"></tbody>
+    </table>
+  </div>
 
 </div>
 
-<!-- ================= SCRIPTS ================= -->
-<script src="{{ url_for('static', filename='auth.js') }}"></script>
-
 <script>
-    checkAuth();
+document.getElementById("current-date").innerText =
+  new Date().toDateString();
 
-    document.getElementById("user-email").innerText =
-        localStorage.getItem("user_email") || "";
+fetch("/api/dashboard/stats")
+  .then(res => res.json())
+  .then(d => {
+    customers.innerText = d.customers;
+    instruments.innerText = d.instruments;
+    pending.innerText = d.pending_services;
+  });
 
-    const today = new Date();
-    document.getElementById("current-date").innerText =
-        today.toLocaleDateString("en-IN", { dateStyle: "full" });
+fetch("/api/customers/recent")
+  .then(res => res.json())
+  .then(data => {
+    customers_table.innerHTML = data.map(c => `
+      <tr>
+        <td>${c.company_id}</td>
+        <td>${c.company_name}</td>
+        <td>${c.company_type}</td>
+        <td>${c.contact_name}</td>
+        <td>${c.contact_phone}</td>
+      </tr>`).join("");
+  });
 
-    const role = localStorage.getItem("user_role");
-    if (role === "Admin") {
-        document.getElementById("admin-link").style.display = "block";
-    }
-
-    function logout() {
-        localStorage.clear();
-        window.location.href = "/";
-    }
-
-    // ===== Load Data =====
-    window.onload = () => {
-        loadStats();
-        loadRecentCustomers();
-        loadPendingServices();
-    };
-
-    function loadStats() {
-        fetchWithAuth("/api/customers")
-            .then(r => r.json())
-            .then(d => document.getElementById("total-customers").innerText = d.length);
-
-        fetchWithAuth("/api/instruments")
-            .then(r => r.json())
-            .then(d => document.getElementById("active-instruments").innerText = d.length);
-
-        fetchWithAuth("/api/services?status=Pending")
-            .then(r => r.json())
-            .then(d => document.getElementById("pending-services").innerText = d.length);
-    }
-
-    function loadRecentCustomers() {
-        fetchWithAuth("/api/customers")
-            .then(r => r.json())
-            .then(data => {
-                const tbody = document.getElementById("recent-customers-body");
-                tbody.innerHTML = "";
-
-                data.slice(-5).reverse().forEach(c => {
-                    tbody.innerHTML += `
-                        <tr>
-                            <td>${c.customer_id}</td>
-                            <td>${c.customer_name}</td>
-                            <td>${c.contact_person || "-"}</td>
-                            <td>${c.mobile || "-"}</td>
-                            <td>${c.status}</td>
-                            <td>
-                                <a class="btn btn-secondary btn-sm" href="/view_customer?id=${c.customer_id}">
-                                    View
-                                </a>
-                            </td>
-                        </tr>`;
-                });
-            });
-    }
-
-    function loadPendingServices() {
-        fetchWithAuth("/api/services?status=Pending")
-            .then(r => r.json())
-            .then(data => {
-                const tbody = document.getElementById("pending-services-body");
-                tbody.innerHTML = "";
-
-                data.slice(0,5).forEach(s => {
-                    tbody.innerHTML += `
-                        <tr>
-                            <td>${s.service_id}</td>
-                            <td>${s.instrument_name}</td>
-                            <td>${s.customer_name}</td>
-                            <td>${s.service_type}</td>
-                            <td>${s.service_date}</td>
-                            <td>${s.status}</td>
-                        </tr>`;
-                });
-            });
-    }
+fetch("/api/services/pending")
+  .then(res => res.json())
+  .then(data => {
+    services_table.innerHTML = data.map(s => `
+      <tr>
+        <td>${s.id}</td>
+        <td>${s.i_serial}</td>
+        <td>${s.company_name}</td>
+        <td>${s.problem_reported}</td>
+        <td>${s.start_date}</td>
+      </tr>`).join("");
+  });
 </script>
 
 </body>
