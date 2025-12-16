@@ -131,7 +131,7 @@ def recent_customers():
 
     cursor.execute("""
         SELECT company_id, company_name, company_type,
-               contact_name, conatct_phone
+               conatct_name, contact_phone
         FROM customers
     """)
 
@@ -221,6 +221,7 @@ def amc_details(i_serial):
 # ---------------- MAIN ----------------
 if __name__ == "__main__":
     app.run(debug=False)
+
 
 
 
