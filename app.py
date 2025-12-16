@@ -37,7 +37,7 @@ def get_db_connection():
 def login_page():
     return render_template("login.html")
 
-@app.route("/api/dashboard")
+@app.route("/dashboard")
 @login_required
 def dashboradpage():
     return render_template("dashboard.html")
@@ -236,6 +236,7 @@ def amc_details(i_serial):
 # ---------------- MAIN ----------------
 if __name__ == "__main__":
     app.run(debug=False)
+
 
 
 
