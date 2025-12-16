@@ -59,7 +59,7 @@ def login_api():
     cursor.close()
     conn.close()
 
-  if user:
+    if user:
         session["user"] = user["name"]  
         return jsonify({"success": True})
     else:
@@ -234,6 +234,7 @@ def amc_details(i_serial):
 # ---------------- MAIN ----------------
 if __name__ == "__main__":
     app.run(debug=False)
+
 
 
 
