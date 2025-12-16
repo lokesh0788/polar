@@ -5,7 +5,7 @@
   <title>AI Command Dashboard | Service Management</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Fonts -->
+  <!-- Premium Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="{{ url_for('static', filename='dashborad.css') }}">
@@ -21,16 +21,18 @@
   </div>
 
   <nav>
-    <a class="active">Dashboard</a>
-    <a href="customers.html">Customers</a>
-    <a href="instruments.html">Instruments</a>
-    <a href="services.html">Service Records</a>
-    <a href="export.html">Data Export</a>
-    <a href="admin_users.html">User Control</a>
+    <a class="active" href="{{ url_for('dashboard') }}">Dashboard</a>
+    <a href="#">Customers</a>
+    <a href="#">Instruments</a>
+    <a href="#">Service Records</a>
+    <a href="#">Data Export</a>
+    <a href="#">User Control</a>
   </nav>
 
   <div class="sidebar-footer">
-    AI Engine • v1.0
+    <div id="user-email">—</div>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+    <small>AI Engine • v1.0</small>
   </div>
 </aside>
 
@@ -66,7 +68,7 @@
 
     <div class="stat crimson">
       <h3>Critical Alerts</h3>
-      <span id="critical-issues">0</span>
+      <span id="critical-issues">—</span>
     </div>
   </section>
 
@@ -86,7 +88,7 @@
           </tr>
         </thead>
         <tbody id="recent-customers-body">
-          <tr><td colspan="4">Loading intelligence...</td></tr>
+          <tr><td colspan="4">Loading intelligence…</td></tr>
         </tbody>
       </table>
     </div>
@@ -104,7 +106,7 @@
           </tr>
         </thead>
         <tbody id="pending-services-body">
-          <tr><td colspan="4">Analyzing service logs...</td></tr>
+          <tr><td colspan="4">Analyzing service logs…</td></tr>
         </tbody>
       </table>
     </div>
@@ -113,58 +115,82 @@
 
 </main>
 
+<!-- ================= AUTH ================= -->
 <script src="{{ url_for('static', filename='auth.js') }}"></script>
 
 <script>
+/* ---------- AUTH ---------- */
 checkAuth();
+setUserInfo("user-email");
 
+/* ---------- DATE ---------- */
 const date = new Date();
 document.getElementById("current-date").innerText =
-  date.toLocaleDateString("en-IN", { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+  date.toLocaleDateString("en-IN", {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
 
-// Load stats
+/* ---------- DASHBOARD STATS ---------- */
 fetchWithAuth("/api/dashboard/stats")
   .then(res => res.json())
   .then(d => {
-    document.getElementById("total-customers").innerText = d.customers;
-    document.getElementById("active-instruments").innerText = d.instruments;
-    document.getElementById("pending-services").innerText = d.pending_services;
-    document.getElementById("critical-issues").innerText = d.critical;
+    document.getElementById("total-customers").innerText = d.customers ?? "0";
+    document.getElementById("active-instruments").innerText = d.instruments ?? "0";
+    document.getElementById("pending-services").innerText = d.pending_services ?? "0";
+    document.getElementById("critical-issues").innerText = d.critical ?? "0";
   })
-  .catch(err => {
-    console.error("Dashboard stats load failed:", err);
+  .catch(() => {
+    console.warn("Stats unavailable");
   });
 
+/* ---------- RECENT CUSTOMERS ---------- */
+fetchWithAuth("/api/customers/recent")
+  .then(r => r.json())
+  .then(data => {
+    const body = document.getElementById("recent-customers-body");
+    body.innerHTML = "";
 
-// Recent customers
-fetchWithAuth("/api/customers/recent").then(r=>r.json()).then(data=>{
-  const body = document.getElementById("recent-customers-body");
-  body.innerHTML = "";
-  data.forEach(c=>{
-    body.innerHTML += `
-      <tr>
-        <td>${c.company_id}</td>
-        <td>${c.company_name}</td>
-        <td>${c.contact_name}</td>
-        <td>${c.contact_phone}</td>
-      </tr>`;
-  });
-});
+    if (!data.length) {
+      body.innerHTML = `<tr><td colspan="4">No recent records</td></tr>`;
+      return;
+    }
 
-// Pending services
-fetchWithAuth("/api/services/pending").then(r=>r.json()).then(data=>{
-  const body = document.getElementById("pending-services-body");
-  body.innerHTML = "";
-  data.forEach(s=>{
-    body.innerHTML += `
-      <tr>
-        <td>${s.id}</td>
-        <td>${s.i_serial}</td>
-        <td>${s.company_name}</td>
-        <td>${s.start_date}</td>
-      </tr>`;
+    data.forEach(c => {
+      body.innerHTML += `
+        <tr>
+          <td>${c.company_id}</td>
+          <td>${c.company_name}</td>
+          <td>${c.contact_name}</td>
+          <td>${c.contact_phone}</td>
+        </tr>`;
+    });
   });
-});
+
+/* ---------- PENDING SERVICES ---------- */
+fetchWithAuth("/api/services/pending")
+  .then(r => r.json())
+  .then(data => {
+    const body = document.getElementById("pending-services-body");
+    body.innerHTML = "";
+
+    if (!data.length) {
+      body.innerHTML = `<tr><td colspan="4">No pending services</td></tr>`;
+      return;
+    }
+
+    data.forEach(s => {
+      body.innerHTML += `
+        <tr>
+          <td>${s.id}</td>
+          <td>${s.i_serial}</td>
+          <td>${s.company_name}</td>
+          <td>${s.start_date}</td>
+        </tr>`;
+    });
+  });
 </script>
 
 </body>
