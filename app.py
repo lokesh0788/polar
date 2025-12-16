@@ -5,6 +5,14 @@ import os
 
 app = Flask(__name__)
 CORS(app)
+#-------------------Authentication-decorater------------------#
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if "user" not in session:
+            return redirect(url_for("login_page"))
+        return f(*args, **kwargs)
+    return decorated_function
 
 # ---------------- MySQL Connection ----------------
 def get_db_connection():
@@ -26,9 +34,6 @@ def get_db_connection():
 def login_page():
     return render_template("login.html")
 
-@app.route("/dashboard")
-def dashboard():
-    return render_template("dashboard.html")
 
 # ---------------- LOGIN API ----------------
 @app.route("/api/login", methods=["POST"])
@@ -221,6 +226,7 @@ def amc_details(i_serial):
 # ---------------- MAIN ----------------
 if __name__ == "__main__":
     app.run(debug=False)
+
 
 
 
