@@ -52,9 +52,7 @@ function getCurrentUser() {
    LOGOUT
 ------------------------------------------ */
 function logout() {
-    localStorage.removeItem("auth_token");
-    localStorage.removeItem("user_email");
-    window.location.href = "/";
+    fetch("/logout");
 }
 
 /* ------------------------------------------
