@@ -95,6 +95,15 @@ def api_services():
     return jsonify(data)
 
 # ==================================================
+# logout
+# ==================================================
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return render_template("login.html")
+    
+# ==================================================
 # DASHBOARD APIs
 # ==================================================
 
@@ -221,6 +230,7 @@ def amc_details(i_serial):
 # ---------------- MAIN ----------------
 if __name__ == "__main__":
     app.run(debug=False)
+
 
 
 
